@@ -165,9 +165,13 @@ namespace BruteForceGui.Models
         {
             var args = new PasswortFoundedArgs(passwort, time, allTrys);
             Passwordfounded(this, args);
+
+
         }
         #endregion
 
         
+
+
     }
 }
