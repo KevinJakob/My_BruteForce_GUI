@@ -242,6 +242,11 @@ namespace BruteForceGui.ViewModels
             WithUpperCase = false;
             WithNumbers = false;
             WithSpecialChars = false;
+            Zeit = "00:00:00:00";
+            AlleVersuche = "0";
+            GefundenesPasswort = "Bitte suche starten";
+            Versuche = "0";
+            GeradeTestet = "nichts";
 
         }
 
@@ -257,6 +262,7 @@ namespace BruteForceGui.ViewModels
                 var MinZeichen = MinZeichenAnzahl;
                 var MaxZeichen = MaxZeichenAnzahl;
                 var Aktualisierung = AktRhythm;
+                GefundenesPasswort = "Passwort wird gesucht!";
                 LogicBruteforce logic = new LogicBruteforce();
                 logic.PasswortStatus += logic_PasswortStatus;
                 logic.Passwordfounded += logic_Passwordfounded;

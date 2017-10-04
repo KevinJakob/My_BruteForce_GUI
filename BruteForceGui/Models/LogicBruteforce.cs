@@ -79,7 +79,7 @@ namespace BruteForceGui.Models
             if (PasswortLänge == maxLänge+1)
             {
                 IsWeitermachen = true;
-                GeneriertesPasswort = "Error! PW not in Range!!!";
+                GeneriertesPasswort = "Error! Password not in Range!!!";
                 _alleVersuche = Zähler;
                 _sw.Stop();
                 OnPasswortFounded(GeneriertesPasswort, _sw.Elapsed, _alleVersuche);
@@ -207,8 +207,8 @@ namespace BruteForceGui.Models
             GeneriertesPasswort = "";
             _alleVersuche = 0;
 
-            OnPasswortStatus(GeneriertesPasswort, Zähler);
-            OnPasswortFounded(GeneriertesPasswort,_sw.Elapsed,_alleVersuche);
+            OnPasswortStatus("nichts", Zähler);
+            OnPasswortFounded("Bitte starte die Suche!",_sw.Elapsed,_alleVersuche);
 
         }
     }
