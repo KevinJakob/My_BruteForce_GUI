@@ -79,6 +79,20 @@ namespace BruteForceGui.ViewModels
             }
         }
 
+        private bool _isEditable2;
+        public bool IsEditable2
+        {
+            get
+            {
+                return _isEditable2;
+            }
+            set
+            {
+                _isEditable2 = value;
+                OnPropertyChanged(nameof(IsEditable2));
+            }
+        }
+
         private string _ePasswort;
         public string EPasswort
         {
@@ -163,6 +177,49 @@ namespace BruteForceGui.ViewModels
             }
         }
 
+        private int _minZeichenAnzahl;
+        public int MinZeichenAnzahl
+        {
+            get
+            {
+                return _minZeichenAnzahl;
+            }
+            set
+            {
+                _minZeichenAnzahl = value;
+                OnPropertyChanged(nameof(MinZeichenAnzahl));
+            }
+        }
+
+        private int _maxZeichenAnzahl;
+        public int MaxZeichenAnzahl
+        {
+            get
+            {
+                return _maxZeichenAnzahl;
+            }
+            set
+            {
+                _maxZeichenAnzahl = value;
+                OnPropertyChanged(nameof(MaxZeichenAnzahl));
+            }
+        }
+
+        private int _aktRhythm;
+        public int AktRhythm
+        {
+            get
+            {
+                return _aktRhythm;
+            }
+            set
+            {
+                _aktRhythm = value;
+                OnPropertyChanged(nameof(AktRhythm));
+            }
+        }
+
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -177,6 +234,10 @@ namespace BruteForceGui.ViewModels
         {
             LogicBruteforce logic = new LogicBruteforce();
             IsEditable = true;
+            IsEditable2 = false;
+            MinZeichenAnzahl = 1;
+            MaxZeichenAnzahl = 64;
+            AktRhythm = 100000;
             WithLowerCase = false;
             WithUpperCase = false;
             WithNumbers = false;
@@ -193,12 +254,31 @@ namespace BruteForceGui.ViewModels
                 var UpperCase = WithUpperCase;
                 var Numbers = WithNumbers;
                 var SpecialChars = WithSpecialChars;
+                var MinZeichen = MinZeichenAnzahl;
+                var MaxZeichen = MaxZeichenAnzahl;
+                var Aktualisierung = AktRhythm;
                 LogicBruteforce logic = new LogicBruteforce();
                 logic.PasswortStatus += logic_PasswortStatus;
                 logic.Passwordfounded += logic_Passwordfounded;
+                logic.Reset += logic_Reset;
                 logic.CharSelector(LowerCase, UpperCase, Numbers, SpecialChars);
-                logic.StarteBruteForce(EPasswort);
+                logic.StarteBruteForce(EPasswort, MinZeichen, MaxZeichen, AktRhythm);
             },TaskCreationOptions.LongRunning);   
+        }
+
+        public void Reset()
+        {
+            LogicBruteforce logic = new LogicBruteforce();
+            logic.PasswortStatus += logic_PasswortStatus;
+            logic.Passwordfounded += logic_Passwordfounded;
+            logic.ResetData();
+            IsEditable = true;
+            IsEditable2 = false;
+        }
+
+        private void logic_Reset(object sender, ResetArgs e)
+        {
+            IsEditable2 = e.Reset;
         }
         
         
@@ -220,6 +300,5 @@ namespace BruteForceGui.ViewModels
                 AlleVersuche = Convert.ToString(e.AllTrys);
             });
         }
-
     }
 }

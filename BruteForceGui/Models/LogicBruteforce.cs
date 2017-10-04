@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BruteForceGui.ViewModels;
+using System.Windows;
 
 namespace BruteForceGui.Models
 {
@@ -19,6 +20,7 @@ namespace BruteForceGui.Models
         #region EventHandler
         public event EventHandler<BruteForceStatusArgs> PasswortStatus;
         public event EventHandler<PasswortFoundedArgs> Passwordfounded;
+        public event EventHandler<ResetArgs> Reset;
         #endregion
 
         #region Variablen
@@ -27,11 +29,13 @@ namespace BruteForceGui.Models
         public List<char> MeineZeichen;
         public int Listenlänge;
         public bool IsWeitermachen = false;
-        public int PasswortLänge = 0;
+        public int PasswortLänge;
         public long Zähler = 0;
         private Stopwatch _sw;
         private int _uiVerzögerer = 0;
         private long _alleVersuche;
+        private int Aktualisierer;
+        private bool _überbrücker=true;
         #endregion
 
         #region Brute Force execute
@@ -45,59 +49,81 @@ namespace BruteForceGui.Models
             _eingegebenesPasswort = passwordSecure;
         }
 
-        public void StarteBruteForce(string Passwort)
+        public void StarteBruteForce(string Passwort, int minLänge, int maxLänge, int AktRhythm)
         {
-            _eingegebenesPasswort = Passwort;
-            _sw.Start();
-                //Passwort test beginnen mit Sonderzeichen
+            if (minLänge > maxLänge)
+            {
+                OnReset(_überbrücker);
+                MessageBox.Show("Error! Falsche Einstellung der Passwortlänge");
+            }
+            else
+            {
+                _eingegebenesPasswort = Passwort;
+                _sw.Start();
+                PasswortLänge = minLänge;
+                Aktualisierer = AktRhythm;
                 Listenlänge = MeineZeichen.Count;
                 while (IsWeitermachen == false)
                 {
-                    PasswortLänge++;
                     char[] ztPasswort = new char[PasswortLänge];
-                    ZeichenGenerator(ztPasswort, 0);
+                    ZeichenGenerator(ztPasswort, 0, maxLänge);
+                    PasswortLänge++;
                 }
+
+                OnReset(_überbrücker);
+            }
         }
 
-        private void ZeichenGenerator(char[] zuTestendesPasswort, int Position)
+        private void ZeichenGenerator(char[] zuTestendesPasswort, int Position, int maxLänge)
         {
-            for (int i = 0; i < Listenlänge; i++)
+            if (PasswortLänge == maxLänge+1)
             {
-                zuTestendesPasswort[Position] = MeineZeichen[i];
-                if (Position < PasswortLänge - 1)
+                IsWeitermachen = true;
+                GeneriertesPasswort = "Error! PW not in Range!!!";
+                _alleVersuche = Zähler;
+                _sw.Stop();
+                OnPasswortFounded(GeneriertesPasswort, _sw.Elapsed, _alleVersuche);
+            }
+            else
+            {
+                for (int i = 0; i < Listenlänge; i++)
                 {
-                    ZeichenGenerator(zuTestendesPasswort, Position + 1);
-                }
-
-                //Passwort umwandeln aus Array in string
-                GeneriertesPasswort = new string(zuTestendesPasswort);
-
-                //Passwort überprüfen
-                if (Position == PasswortLänge - 1)
-                {
-                    Zähler++;
-                    if (_uiVerzögerer == 0)
+                    zuTestendesPasswort[Position] = MeineZeichen[i];
+                    if (Position < PasswortLänge - 1)
                     {
-                        OnPasswortStatus(GeneriertesPasswort, Zähler);
+                        ZeichenGenerator(zuTestendesPasswort, Position + 1, maxLänge);
                     }
-                    _uiVerzögerer++;
-                    if (_uiVerzögerer == 100000)
-                    {
-                        _uiVerzögerer = 0;
-                    }
-                    PasswortCheck();
-                }
 
-                //Schleife Abbrechen
-                if (IsWeitermachen == true)
-                {
-                    break;
+                    //Passwort umwandeln aus Array in string
+                    GeneriertesPasswort = new string(zuTestendesPasswort);
+
+                    //Passwort überprüfen
+                    if (Position == PasswortLänge - 1)
+                    {
+                        Zähler++;
+                        if (_uiVerzögerer == 0)
+                        {
+                            OnPasswortStatus(GeneriertesPasswort, Zähler);
+                        }
+                        _uiVerzögerer++;
+                        if (_uiVerzögerer == Aktualisierer)
+                        {
+                            _uiVerzögerer = 0;
+                        }
+                        PasswortCheck();
+                    }
+
+                    //Schleife Abbrechen
+                    if (IsWeitermachen == true)
+                    {
+                        break;
+                    }
                 }
             }
         }
 
         //Passwort auf übereinstimmung prüfen
-        public void PasswortCheck()
+        private void PasswortCheck()
         {
             if (GeneriertesPasswort == _eingegebenesPasswort)
             {
@@ -166,10 +192,24 @@ namespace BruteForceGui.Models
             var args = new PasswortFoundedArgs(passwort, time, allTrys);
             Passwordfounded(this, args);
         }
+
+        protected void OnReset(bool Resetter)
+        {
+            var args = new ResetArgs(Resetter);
+            Reset(this, args);
+        }
         #endregion
-
         
+        public void ResetData()
+        {
+            _sw.Reset();
+            Zähler = 0;
+            GeneriertesPasswort = "";
+            _alleVersuche = 0;
 
+            OnPasswortStatus(GeneriertesPasswort, Zähler);
+            OnPasswortFounded(GeneriertesPasswort,_sw.Elapsed,_alleVersuche);
 
+        }
     }
 }

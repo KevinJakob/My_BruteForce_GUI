@@ -36,5 +36,9 @@ namespace BruteForceGui.Views
             _vm.StartBruteForceAsync();
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.Reset();
+        }
     }
 }

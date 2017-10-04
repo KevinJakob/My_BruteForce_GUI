@@ -60,6 +60,7 @@
     </Compile>
     <Compile Include="Models\Args\BruteForceStatusArgs.cs" />
     <Compile Include="Models\Args\PasswortFoundedArgs.cs" />
+    <Compile Include="Models\Args\ResetArgs.cs" />
     <Compile Include="Models\LogicBruteforce.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -97,6 +98,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyBruteForce.ViewModel\MyBruteForce.ViewModel.csproj">
+      <Project>{d1d7f740-c11a-4184-a2af-7950c0027dc1}</Project>
+      <Name>MyBruteForce.ViewModel</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
