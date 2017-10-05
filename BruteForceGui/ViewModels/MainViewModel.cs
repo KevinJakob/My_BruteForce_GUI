@@ -271,13 +271,13 @@ namespace BruteForceGui.ViewModels
             IsEditableResetButton = false;
             IsEditableStopButton = false;
             IsEditableContinueButton = false;
+            WithLowerCase = true;
+            WithNumbers = true;
+            WithSpecialChars = true;
+            WithUpperCase = true;
             MinZeichenAnzahl = 1;
             MaxZeichenAnzahl = 64;
             AktRhythm = 100000;
-            WithLowerCase = false;
-            WithUpperCase = false;
-            WithNumbers = false;
-            WithSpecialChars = false;
             Zeit = "00:00:00";
             VerstricheneZeit = "00:00:00";
             AlleVersuche = "0";
@@ -312,6 +312,7 @@ namespace BruteForceGui.ViewModels
                 logic.Passwordfounded += logic_Passwordfounded;
                 logic.TimerUp += logic_TimerUp;
                 logic.Reset += logic_Reset;
+                logic.WrongRange += Logic_WrongRange;
                 logic.CharSelector(LowerCase, UpperCase, Numbers, SpecialChars);
                 logic.Configurate(EPasswort, MinZeichen, MaxZeichen, AktRhythm);
 
@@ -360,6 +361,7 @@ namespace BruteForceGui.ViewModels
         private void logic_Reset(object sender, ResetArgs e)
         {
             IsEditableResetButton = e.Reset;
+            IsEditableStopButton = false;
         }
         
         
@@ -410,5 +412,15 @@ namespace BruteForceGui.ViewModels
                 AlleVersuche = Convert.ToString(e.AllTrys);
             });
         }
+
+        private void Logic_WrongRange(object sender, WrongRangeArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                GefundenesPasswort = e.EstimatedPasswort;
+                GeradeTestet = e.Passwort;
+            });
+        }
+
     }
 }

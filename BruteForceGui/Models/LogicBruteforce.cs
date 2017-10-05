@@ -24,21 +24,21 @@ namespace BruteForceGui.Models
         public event EventHandler<BruteForceStatusResetArgs> PasswortStatusReset;
         public event EventHandler<PasswortFoundedResetArgs> PasswordfoundedReset;
         public event EventHandler<TimerArgs> TimerUp;
+        public event EventHandler<WrongRangeArgs> WrongRange;
         #endregion
 
         #region Variablen
         private string _eingegebenesPasswort;
-        public string GeneriertesPasswort;
-        public List<char> MeineZeichen;
-        public List<int> ContinueSpeicher;
-        public int Listenlänge;
+        private string _generiertesPasswort;
+        private List<char> _meineZeichen;
+        private int _listenlänge;
         public bool IsWeitermachen = false;
-        public int PasswortLänge;
-        public long Zähler = 0;
+        private int _passwortLänge;
+        private long _zähler = 0;
         private Stopwatch _sw;
         private int _uiVerzögerer = 0;
         private long _alleVersuche;
-        private int Aktualisierer;
+        private int _aktualisierer;
         private bool _überbrücker=true;
         #endregion
 
@@ -59,49 +59,49 @@ namespace BruteForceGui.Models
             //Starte Rekursive schleife
             while (IsWeitermachen == false)
             {
-                char[] zutestendesPasswort = new char[PasswortLänge];
+                char[] zutestendesPasswort = new char[_passwortLänge];
                 ZeichenGenerator(zutestendesPasswort, 0, maxLänge);
-                PasswortLänge++;
+                _passwortLänge++;
             }
         }
 
         private void ZeichenGenerator(char[] zuTestendesPasswort, int Position, int maxLänge)
         {
             //Max angegebene Passwortlänge erreicht?
-            if (PasswortLänge == maxLänge+1)
+            if (_passwortLänge == maxLänge+1)
             {
                 IsWeitermachen = true;
-                GeneriertesPasswort = "Error! Password not in Range!!!";
-                _alleVersuche = Zähler;
+                _generiertesPasswort = "Error! Password not in Range!!!";
+                _alleVersuche = _zähler;
                 _sw.Stop();
-                OnPasswortFounded(GeneriertesPasswort, _sw.Elapsed, _alleVersuche);
+                OnPasswortFounded(_generiertesPasswort, _sw.Elapsed, _alleVersuche);
             }
             else
             {
                 //PW Array Schleife
-                for (int i = 0; i < Listenlänge; i++)
+                for (int i = 0; i < _listenlänge; i++)
                 {
-                    zuTestendesPasswort[Position] = MeineZeichen[i];
-                    if (Position < PasswortLänge - 1)
+                    zuTestendesPasswort[Position] = _meineZeichen[i];
+                    if (Position < _passwortLänge - 1)
                     {
                         ZeichenGenerator(zuTestendesPasswort,Position + 1, maxLänge);
                     }
 
                     //Passwort umwandeln aus Array in string
-                    GeneriertesPasswort = new string(zuTestendesPasswort);
+                    _generiertesPasswort = new string(zuTestendesPasswort);
 
                     //Passwort überprüfen
-                    if (Position == PasswortLänge - 1)
+                    if (Position == _passwortLänge - 1)
                     {
-                        Zähler++;
+                        _zähler++;
                         if (_uiVerzögerer == 0)
                         {
                             //Status aktualisieren
-                            OnPasswortStatus(GeneriertesPasswort, Zähler);
+                            OnPasswortStatus(_generiertesPasswort, _zähler);
                             OnTimer(Convert.ToString(_sw.Elapsed));
                         }
                         _uiVerzögerer++;
-                        if (_uiVerzögerer == Aktualisierer)
+                        if (_uiVerzögerer == _aktualisierer)
                         {
                             _uiVerzögerer = 0;
                         }
@@ -120,12 +120,12 @@ namespace BruteForceGui.Models
         //Passwort auf übereinstimmung prüfen
         private void PasswortCheck()
         {
-            if (GeneriertesPasswort == _eingegebenesPasswort)
+            if (_generiertesPasswort == _eingegebenesPasswort)
             {
-                _alleVersuche = Zähler;
+                _alleVersuche = _zähler;
                 IsWeitermachen = true;
                 _sw.Stop();
-                OnPasswortFounded(GeneriertesPasswort, _sw.Elapsed, _alleVersuche);
+                OnPasswortFounded(_generiertesPasswort, _sw.Elapsed, _alleVersuche);
             }
         }
         #endregion
@@ -133,34 +133,33 @@ namespace BruteForceGui.Models
         #region CharSelector
         public void CharSelector(bool lower, bool upper, bool numbers, bool special)
         {
-            MeineZeichen = new List<char>();
-            ContinueSpeicher = new List<int>();
+            _meineZeichen = new List<char>();
 
             //kleinesAlphabet
             if (lower == true)
             {
-                FuegeZeichenHinzu(MeineZeichen, 'a', 'z');
+                FuegeZeichenHinzu(_meineZeichen, 'a', 'z');
             }
 
             //großesAlphabet
             if (upper == true)
             {
-                FuegeZeichenHinzu(MeineZeichen, 'A', 'Z');
+                FuegeZeichenHinzu(_meineZeichen, 'A', 'Z');
             }
 
             //Zahlen
             if (numbers == true)
             {
-                FuegeZeichenHinzu(MeineZeichen, '0', '9');
+                FuegeZeichenHinzu(_meineZeichen, '0', '9');
             }
 
             //Sonderzeichen
             if (special == true)
             {
-                FuegeZeichenHinzu(MeineZeichen, '!', '/');
-                FuegeZeichenHinzu(MeineZeichen, ':', '@');
-                FuegeZeichenHinzu(MeineZeichen, '[', '`');
-                FuegeZeichenHinzu(MeineZeichen, '{', '~');
+                FuegeZeichenHinzu(_meineZeichen, '!', '/');
+                FuegeZeichenHinzu(_meineZeichen, ':', '@');
+                FuegeZeichenHinzu(_meineZeichen, '[', '`');
+                FuegeZeichenHinzu(_meineZeichen, '{', '~');
             }
         }
 
@@ -189,13 +188,18 @@ namespace BruteForceGui.Models
             Passwordfounded(this, args);
         }
 
+        protected void OnWrongRange(string errorPasswort, string errorEstimatedPasswort)
+        {
+            var args = new WrongRangeArgs(errorPasswort, errorEstimatedPasswort);
+            WrongRange(this, args);
+        }
+
         protected void OnPasswortStatusReset(string estimatedPasswort, long currentTry)
         {
             var args = new BruteForceStatusResetArgs(estimatedPasswort, currentTry);
             PasswortStatusReset(this, args);
         }
 
-        //Event Passwort gefunden
         protected void OnPasswortFoundedReset(string passwort, TimeSpan time, long allTrys)
         {
             var args = new PasswortFoundedResetArgs(passwort, time, allTrys);
@@ -219,13 +223,13 @@ namespace BruteForceGui.Models
         {
             //Werte zurücksetzen
             _sw.Reset();
-            Zähler = 0;
-            GeneriertesPasswort = "";
+            _zähler = 0;
+            _generiertesPasswort = "";
             _alleVersuche = 0;
             _uiVerzögerer = 0;
 
             //Zur Anzeige weiter geben
-            OnPasswortStatusReset("nichts", Zähler);
+            OnPasswortStatusReset("nichts", _zähler);
             OnPasswortFoundedReset("Bitte starte die Suche!",_sw.Elapsed,_alleVersuche);
             OnTimer("00:00:00");
         }
@@ -236,15 +240,15 @@ namespace BruteForceGui.Models
             if (minLänge > maxLänge)
             {
                 OnReset(_überbrücker);
-                MessageBox.Show("Error! Falsche Einstellung der Passwortlänge");
+                OnWrongRange("Error! Falsche Range-Einstellung!!!", "Error! Falsche Range-Einstellung!!!");
             }
             else
             {
                 //Startwerte festlegen
                 _eingegebenesPasswort = Passwort;
-                PasswortLänge = minLänge;
-                Aktualisierer = AktRhythm;
-                Listenlänge = MeineZeichen.Count;
+                _passwortLänge = minLänge;
+                _aktualisierer = AktRhythm;
+                _listenlänge = _meineZeichen.Count;
 
                 //BruteForce ausführen
                 BruteForceExecute(maxLänge);
