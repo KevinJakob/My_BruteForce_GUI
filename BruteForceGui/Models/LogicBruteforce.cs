@@ -21,6 +21,8 @@ namespace BruteForceGui.Models
         public event EventHandler<BruteForceStatusArgs> PasswortStatus;
         public event EventHandler<PasswortFoundedArgs> Passwordfounded;
         public event EventHandler<ResetArgs> Reset;
+        public event EventHandler<BruteForceStatusResetArgs> PasswortStatusReset;
+        public event EventHandler<PasswortFoundedResetArgs> PasswordfoundedReset;
         #endregion
 
         #region Variablen
@@ -49,33 +51,20 @@ namespace BruteForceGui.Models
             _eingegebenesPasswort = passwordSecure;
         }
 
-        public void StarteBruteForce(string Passwort, int minLänge, int maxLänge, int AktRhythm)
+        public void BruteForceExecute(int maxLänge)
         {
-            if (minLänge > maxLänge)
+            //Starte Rekursive schleife
+            while (IsWeitermachen == false)
             {
-                OnReset(_überbrücker);
-                MessageBox.Show("Error! Falsche Einstellung der Passwortlänge");
-            }
-            else
-            {
-                _eingegebenesPasswort = Passwort;
-                _sw.Start();
-                PasswortLänge = minLänge;
-                Aktualisierer = AktRhythm;
-                Listenlänge = MeineZeichen.Count;
-                while (IsWeitermachen == false)
-                {
-                    char[] ztPasswort = new char[PasswortLänge];
-                    ZeichenGenerator(ztPasswort, 0, maxLänge);
-                    PasswortLänge++;
-                }
-
-                OnReset(_überbrücker);
+                char[] zutestendesPasswort = new char[PasswortLänge];
+                ZeichenGenerator(zutestendesPasswort, 0, maxLänge);
+                PasswortLänge++;
             }
         }
 
         private void ZeichenGenerator(char[] zuTestendesPasswort, int Position, int maxLänge)
         {
+            //Max angegebene Passwortlänge erreicht?
             if (PasswortLänge == maxLänge+1)
             {
                 IsWeitermachen = true;
@@ -86,6 +75,7 @@ namespace BruteForceGui.Models
             }
             else
             {
+                //PW Array Schleife
                 for (int i = 0; i < Listenlänge; i++)
                 {
                     zuTestendesPasswort[Position] = MeineZeichen[i];
@@ -193,6 +183,19 @@ namespace BruteForceGui.Models
             Passwordfounded(this, args);
         }
 
+        protected void OnPasswortStatusReset(string estimatedPasswort, long currentTry)
+        {
+            var args = new BruteForceStatusResetArgs(estimatedPasswort, currentTry);
+            PasswortStatusReset(this, args);
+        }
+
+        //Event Passwort gefunden
+        protected void OnPasswortFoundedReset(string passwort, TimeSpan time, long allTrys)
+        {
+            var args = new PasswortFoundedResetArgs(passwort, time, allTrys);
+            PasswordfoundedReset(this, args);
+        }
+
         protected void OnReset(bool Resetter)
         {
             var args = new ResetArgs(Resetter);
@@ -202,14 +205,41 @@ namespace BruteForceGui.Models
         
         public void ResetData()
         {
+            //Werte zurücksetzen
             _sw.Reset();
             Zähler = 0;
             GeneriertesPasswort = "";
             _alleVersuche = 0;
+            _uiVerzögerer = 0;
 
-            OnPasswortStatus("nichts", Zähler);
-            OnPasswortFounded("Bitte starte die Suche!",_sw.Elapsed,_alleVersuche);
+            //Zur Anzeige weiter geben
+            OnPasswortStatusReset("nichts", Zähler);
+            OnPasswortFoundedReset("Bitte starte die Suche!",_sw.Elapsed,_alleVersuche);
+        }
 
+        public void Configurate(string Passwort, int minLänge, int maxLänge, int AktRhythm)
+        {
+            //Min und Max auf Richtigkeit überprüfen
+            if (minLänge > maxLänge)
+            {
+                OnReset(_überbrücker);
+                MessageBox.Show("Error! Falsche Einstellung der Passwortlänge");
+            }
+            else
+            {
+                //Startwerte festlegen
+                _eingegebenesPasswort = Passwort;
+                _sw.Start();
+                PasswortLänge = minLänge;
+                Aktualisierer = AktRhythm;
+                Listenlänge = MeineZeichen.Count;
+
+                //BruteForce ausführen
+                BruteForceExecute(maxLänge);
+
+                //ResetButton freigeben
+                OnReset(_überbrücker);
+            }
         }
     }
 }

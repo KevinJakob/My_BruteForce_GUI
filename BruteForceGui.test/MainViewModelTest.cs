@@ -15,9 +15,9 @@ namespace BruteForceGui.test
         public void StartBrutforce_ShouldNotBeEditable()
         {
             var vm = new MainViewModel();
-            Assert.IsTrue(vm.IsEditable);
+            Assert.IsTrue(vm.IsEditableStartButton);
             vm.StartBruteForceAsync();
-            Assert.IsFalse(vm.IsEditable);
+            Assert.IsFalse(vm.IsEditableStartButton);
 
         }
     }

@@ -5,51 +5,60 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BruteForceGui.Views"
         mc:Ignorable="d"
-        Title="BruteForceAttack" Height="750" Width="300"
+        Title="BruteForceAttack" Height="465" Width="600"
         ResizeMode="NoResize">
-    <Border Padding="5">
-
-        <StackPanel>
-
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="55"></RowDefinition>
+            <RowDefinition Height="55"></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0" Margin="5 0 5 0">
             <TextBlock Text="Zu findendes Passwort eingeben:" Margin="0 0 0 5" FontSize="14" FontWeight="Bold"/>
-            <TextBox Text="{Binding EPasswort, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditable}"/>
+            <TextBox Text="{Binding EPasswort, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditableStartButton}" />
 
 
-            <TextBlock Text="Zeichen testen:" Margin="0 10 0 4" FontSize="14" FontWeight="Bold"/>
-            <CheckBox IsChecked="{Binding WithLowerCase, NotifyOnSourceUpdated=True}" Content="a-z" Margin="0 1" IsEnabled="{Binding IsEditable}"/>
-            <CheckBox IsChecked="{Binding WithUpperCase, NotifyOnSourceUpdated=True}" Content="A-Z" Margin="0 1" IsEnabled="{Binding IsEditable}"/>
-            <CheckBox IsChecked="{Binding WithNumbers, NotifyOnSourceUpdated=True}" Content="0-9" Margin="0 1" IsEnabled="{Binding IsEditable}"/>
-            <CheckBox IsChecked="{Binding WithSpecialChars, NotifyOnSourceUpdated=True}" Content="Sonderzeichen" Margin="0 1" IsEnabled="{Binding IsEditable}"/>
+            <TextBlock Text="Zeichen testen:" Margin="0 10 0 4" FontSize="14" FontWeight="Bold" />
+            <CheckBox IsChecked="{Binding WithLowerCase, NotifyOnSourceUpdated=True}" Content="a-z" Margin="0 1" IsEnabled="{Binding IsEditableStartButton}" />
+            <CheckBox IsChecked="{Binding WithUpperCase, NotifyOnSourceUpdated=True}" Content="A-Z" Margin="0 1" IsEnabled="{Binding IsEditableStartButton}" />
+            <CheckBox IsChecked="{Binding WithNumbers, NotifyOnSourceUpdated=True}" Content="0-9" Margin="0 1" IsEnabled="{Binding IsEditableStartButton}" />
+            <CheckBox IsChecked="{Binding WithSpecialChars, NotifyOnSourceUpdated=True}" Content="Sonderzeichen" Margin="0 1" IsEnabled="{Binding IsEditableStartButton}" />
 
-            <TextBlock Text="Zeichenanzahl minimum:" FontSize="14" FontWeight="Bold" Margin="0 10 0 5"></TextBlock>
-            <TextBox Text="{Binding MinZeichenAnzahl, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditable}"/>
-            <TextBlock Text="Zeichenanzahl maximum:" FontSize="14" FontWeight="Bold" Margin="0 5 0 5"></TextBlock>
-            <TextBox Text="{Binding MaxZeichenAnzahl, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditable}"/>
+            <TextBlock Text="Zeichenanzahl minimum:" FontSize="14" FontWeight="Bold" Margin="0 10 0 5"/>
+            <TextBox Text="{Binding MinZeichenAnzahl, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditableStartButton}" />
+            <TextBlock Text="Zeichenanzahl maximum:" FontSize="14" FontWeight="Bold" Margin="0 5 0 5"/>
+            <TextBox Text="{Binding MaxZeichenAnzahl, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditableStartButton}" />
 
-            <TextBlock Text="Status Aktualisierungsrhythmus:" FontSize="14" FontWeight="Bold" Margin="0 5 0 5"></TextBlock>
-            <TextBox Text="{Binding AktRhythm, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditable}"/>
-
-            <Button Content="Starte Brute Force Angriff" Margin="0 25 0 1" Click="ButtonStart_Click" IsEnabled="{Binding IsEditable}"></Button>
-            <Button Content="Reset" Margin="0 1 0 25" Click="Button_Click" IsEnabled="{Binding IsEditable2}"></Button>
-
-            <TextBlock Text="Status:" FontSize="14" FontWeight="Bold" Margin="0 0 0 5"/>
-            <TextBlock Text="Gerade wird geprüft:"/>
-            <TextBox Text="{Binding GeradeTestet,Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5"/>
-            <TextBlock Text="Versuche:"/>
-            <TextBox Text="{Binding Versuche,Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3"/>
-
-
-            <TextBlock Text="Gefundenes Passwort:" FontSize="14" FontWeight="Bold" Margin="0 20 0 0"/>
-            <TextBox Text="{Binding GefundenesPasswort, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3"/>
-
-
-            <TextBlock Text="Benötigte Zeit:" FontSize="14" FontWeight="Bold" Margin="0 20 0 0"/>
-            <TextBox Text="{Binding Zeit, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3"/>
-
-            <TextBlock Text="Insgesamt benötigte Versuche:" FontSize="14" FontWeight="Bold" Margin="0 20 0 0"/>
-            <TextBox Text="{Binding AlleVersuche, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3"/>
+            <TextBlock Text="Status Aktualisierungsrhythmus:" FontSize="14" FontWeight="Bold" Margin="0 5 0 5"/>
+            <TextBox Text="{Binding AktRhythm, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditableStartButton}" />
+            
             
         </StackPanel>
+        <StackPanel Grid.Column="1" Margin="5 0 5 0">
 
-    </Border>
+            <TextBlock  Grid.Column ="1" Text="Status:" FontSize="14" FontWeight="Bold" Margin="0 0 0 5" />
+            <TextBlock  Grid.Column ="1" Text="Gerade wird geprüft:" />
+            <TextBox  Grid.Column ="1" Text="{Binding GeradeTestet,Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5" />
+            <TextBlock  Grid.Column ="1" Text="Versuche:" />
+            <TextBox  Grid.Column ="1" Text="{Binding Versuche,Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 15" />
+
+            <TextBlock  Grid.Column ="1" Text="Gefundenes Passwort:" FontSize="14" FontWeight="Bold" Margin="0 15 0 5" />
+            <TextBox Grid.Column ="1" Text="{Binding GefundenesPasswort, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5" />
+
+
+            <TextBlock Grid.Column ="1" Text="Benötigte Zeit:" FontSize="14" FontWeight="Bold" Margin="0 10 0 5" />
+            <TextBox Text="{Binding Zeit, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5" />
+
+            <TextBlock Grid.Column ="1" Text="Insgesamt benötigte Versuche:" FontSize="14" FontWeight="Bold" Margin="0 10 0 5" />
+            <TextBox Grid.Column ="1" Text="{Binding AlleVersuche, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" />
+        </StackPanel>
+        <Button Grid.Row="1" Grid.Column="0" Content="Starte Brute Force Angriff" Margin="5 5" Click="ButtonStart_Click" IsEnabled="{Binding IsEditableStartButton}"/>
+        <Button Grid.Row="1" Grid.Column="1" Content="Reset" Margin="5 5" Click="ButtonReset_Click" IsEnabled="{Binding IsEditableResetButton}"/>
+        <Button Grid.Row="2" Grid.Column="0" Content="Stop Progress" Margin="5 5" Click="ButtonStop_Click" IsEnabled="{Binding IsEditableStopButton}"/>
+        <Button Grid.Row="2" Grid.Column="1" Content="Continue Progress" Margin="5 5" IsEnabled="{Binding IsEditableContinueButton}" Click="Button_Click"/>
+    </Grid>
 </Window>

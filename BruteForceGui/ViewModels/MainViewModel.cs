@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using BruteForceGui.Models;
 using BruteForceGui.Models.Args;
-using BruteForceGui.Views;
 using System.Windows;
 using System.Threading;
 
@@ -14,8 +13,9 @@ namespace BruteForceGui.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        LogicBruteforce logic = new LogicBruteforce();
+        //Verknüpfte Variablen
         private bool _withLowerCase;
-
         public bool WithLowerCase
         {
             get { return _withLowerCase; }
@@ -27,7 +27,6 @@ namespace BruteForceGui.ViewModels
         }
 
         private bool _withUpperCase;
-
         public bool WithUpperCase
         {
             get { return _withUpperCase; }
@@ -39,7 +38,6 @@ namespace BruteForceGui.ViewModels
         }
 
         private bool _withNumbers;
-
         public bool WithNumbers
         {
             get { return _withNumbers; }
@@ -50,10 +48,7 @@ namespace BruteForceGui.ViewModels
             }
         }
 
-
         private bool _withSpecialChars;
-
-
         public bool WithSpecialChars
         {
             get { return _withSpecialChars; }
@@ -64,32 +59,59 @@ namespace BruteForceGui.ViewModels
             }
         }
 
-
-        private bool _isEditable;
-        public bool IsEditable
+        private bool _isEditableStartButton;
+        public bool IsEditableStartButton
         {
             get
             {
-                return _isEditable;
+                return _isEditableStartButton;
             }
             set
             {
-                _isEditable = value;
-                OnPropertyChanged(nameof(IsEditable));
+                _isEditableStartButton = value;
+                OnPropertyChanged(nameof(IsEditableStartButton));
             }
         }
 
-        private bool _isEditable2;
-        public bool IsEditable2
+        private bool _isEditableResetButton;
+        public bool IsEditableResetButton
         {
             get
             {
-                return _isEditable2;
+                return _isEditableResetButton;
             }
             set
             {
-                _isEditable2 = value;
-                OnPropertyChanged(nameof(IsEditable2));
+                _isEditableResetButton = value;
+                OnPropertyChanged(nameof(IsEditableResetButton));
+            }
+        }
+
+        private bool _isEditableStopButton;
+        public bool IsEditableStopButton
+        {
+            get
+            {
+                return _isEditableStopButton;
+            }
+            set
+            {
+                _isEditableStopButton = value;
+                OnPropertyChanged(nameof(IsEditableStopButton));
+            }
+        }
+
+        private bool _isEditableContinueButton;
+        public bool IsEditableContinueButton
+        {
+            get
+            {
+                return _isEditableContinueButton;
+            }
+            set
+            {
+                _isEditableContinueButton = value;
+                OnPropertyChanged(nameof(IsEditableContinueButton));
             }
         }
 
@@ -220,21 +242,21 @@ namespace BruteForceGui.ViewModels
         }
 
 
-
+        //Event
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged(string name)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
 
-
+        //Ersteinstellung
         public MainViewModel()
         {
-            LogicBruteforce logic = new LogicBruteforce();
-            IsEditable = true;
-            IsEditable2 = false;
+            IsEditableStartButton = true;
+            IsEditableResetButton = false;
+            IsEditableStopButton = false;
+            IsEditableContinueButton = false;
             MinZeichenAnzahl = 1;
             MaxZeichenAnzahl = 64;
             AktRhythm = 100000;
@@ -242,7 +264,7 @@ namespace BruteForceGui.ViewModels
             WithUpperCase = false;
             WithNumbers = false;
             WithSpecialChars = false;
-            Zeit = "00:00:00:00";
+            Zeit = "00:00:00";
             AlleVersuche = "0";
             GefundenesPasswort = "Bitte suche starten";
             Versuche = "0";
@@ -250,11 +272,16 @@ namespace BruteForceGui.ViewModels
 
         }
 
+        //Bruteforce Task als neuen Thread
         public Task StartBruteForceAsync()
         {
             return Task.Factory.StartNew(()=>
             {
-                IsEditable = false;
+                //Einstellungen abspeichern
+                IsEditableStartButton = false;
+                IsEditableStopButton = true;
+                IsEditableResetButton = false;
+                IsEditableContinueButton = false;
                 var LowerCase = WithLowerCase;
                 var UpperCase = WithUpperCase;
                 var Numbers = WithNumbers;
@@ -263,31 +290,60 @@ namespace BruteForceGui.ViewModels
                 var MaxZeichen = MaxZeichenAnzahl;
                 var Aktualisierung = AktRhythm;
                 GefundenesPasswort = "Passwort wird gesucht!";
-                LogicBruteforce logic = new LogicBruteforce();
+
+                //Einstellungen übergeben
                 logic.PasswortStatus += logic_PasswortStatus;
                 logic.Passwordfounded += logic_Passwordfounded;
                 logic.Reset += logic_Reset;
                 logic.CharSelector(LowerCase, UpperCase, Numbers, SpecialChars);
-                logic.StarteBruteForce(EPasswort, MinZeichen, MaxZeichen, AktRhythm);
+                logic.Configurate(EPasswort, MinZeichen, MaxZeichen, AktRhythm);
+
+
             },TaskCreationOptions.LongRunning);   
         }
 
-        public void Reset()
+        public void ProgressStoped()
         {
-            LogicBruteforce logic = new LogicBruteforce();
-            logic.PasswortStatus += logic_PasswortStatus;
-            logic.Passwordfounded += logic_Passwordfounded;
-            logic.ResetData();
-            IsEditable = true;
-            IsEditable2 = false;
+            IsEditableResetButton = true;
+            IsEditableContinueButton = true;
+            IsEditableStopButton = false;
+            IsEditableStartButton = false;
+            logic.IsWeitermachen = true;
         }
 
+        public void ProgressContinue()
+        {
+            IsEditableStartButton = false;
+            IsEditableResetButton = false;
+            IsEditableStopButton = true;
+            IsEditableContinueButton = false;
+        }
+
+
+        //Reset der Anzeigen
+        public void Reset()
+        {
+            logic.PasswortStatusReset += logic_PasswortStatusReset;
+            logic.PasswordfoundedReset += logic_PasswordfoundedReset;
+            logic.ResetData();
+            logic.IsWeitermachen = false;
+
+
+            IsEditableStartButton = true;
+            IsEditableResetButton = false;
+            IsEditableStopButton = false;
+            IsEditableContinueButton = false;
+        }
+
+
+        //ResetButtonSichtbar
         private void logic_Reset(object sender, ResetArgs e)
         {
-            IsEditable2 = e.Reset;
+            IsEditableResetButton = e.Reset;
         }
         
         
+        //Abbonierte EventMethoden
         private void logic_PasswortStatus(object sender, BruteForceStatusArgs e)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -298,6 +354,26 @@ namespace BruteForceGui.ViewModels
         }
 
         private void logic_Passwordfounded(object sender, PasswortFoundedArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                GefundenesPasswort = e.Passwort;
+                Zeit = Convert.ToString(e.Time);
+                AlleVersuche = Convert.ToString(e.AllTrys);
+                IsEditableStopButton = false;
+            });
+        }
+
+        private void logic_PasswortStatusReset(object sender, BruteForceStatusResetArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                GeradeTestet = e.EstimatedPasswort;
+                Versuche = Convert.ToString(e.CurrentTry);
+            });
+        }
+
+        private void logic_PasswordfoundedReset(object sender, PasswortFoundedResetArgs e)
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
