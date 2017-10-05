@@ -241,6 +241,20 @@ namespace BruteForceGui.ViewModels
             }
         }
 
+        private string _verstricheneZeit;
+        public string VerstricheneZeit
+        {
+            get
+            {
+                return _verstricheneZeit;
+            }
+            set
+            {
+                _verstricheneZeit = value;
+                OnPropertyChanged(nameof(VerstricheneZeit));
+            }
+        }
+
 
         //Event
         public event PropertyChangedEventHandler PropertyChanged;
@@ -265,6 +279,7 @@ namespace BruteForceGui.ViewModels
             WithNumbers = false;
             WithSpecialChars = false;
             Zeit = "00:00:00";
+            VerstricheneZeit = "00:00:00";
             AlleVersuche = "0";
             GefundenesPasswort = "Bitte suche starten";
             Versuche = "0";
@@ -291,9 +306,11 @@ namespace BruteForceGui.ViewModels
                 var Aktualisierung = AktRhythm;
                 GefundenesPasswort = "Passwort wird gesucht!";
 
+
                 //Einstellungen übergeben
                 logic.PasswortStatus += logic_PasswortStatus;
                 logic.Passwordfounded += logic_Passwordfounded;
+                logic.TimerUp += logic_TimerUp;
                 logic.Reset += logic_Reset;
                 logic.CharSelector(LowerCase, UpperCase, Numbers, SpecialChars);
                 logic.Configurate(EPasswort, MinZeichen, MaxZeichen, AktRhythm);
@@ -317,6 +334,9 @@ namespace BruteForceGui.ViewModels
             IsEditableResetButton = false;
             IsEditableStopButton = true;
             IsEditableContinueButton = false;
+            logic.IsWeitermachen = false;
+            logic.BruteForceExecute(MaxZeichenAnzahl);
+
         }
 
 
@@ -361,6 +381,14 @@ namespace BruteForceGui.ViewModels
                 Zeit = Convert.ToString(e.Time);
                 AlleVersuche = Convert.ToString(e.AllTrys);
                 IsEditableStopButton = false;
+            });
+        }
+
+        private void logic_TimerUp(object sender, TimerArgs e)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                VerstricheneZeit = e.Timer;
             });
         }
 

@@ -44,16 +44,18 @@
             <TextBlock  Grid.Column ="1" Text="Gerade wird geprüft:" />
             <TextBox  Grid.Column ="1" Text="{Binding GeradeTestet,Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5" />
             <TextBlock  Grid.Column ="1" Text="Versuche:" />
-            <TextBox  Grid.Column ="1" Text="{Binding Versuche,Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 15" />
+            <TextBox  Grid.Column ="1" Text="{Binding Versuche,Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5" />
+            <TextBlock  Grid.Column ="1" Text="Verstrichene Zeit:" />
+            <TextBox  Grid.Column ="1" Text="{Binding VerstricheneZeit,Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5" />
 
-            <TextBlock  Grid.Column ="1" Text="Gefundenes Passwort:" FontSize="14" FontWeight="Bold" Margin="0 15 0 5" />
-            <TextBox Grid.Column ="1" Text="{Binding GefundenesPasswort, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5" />
+            <TextBlock  Grid.Column ="1" Text="Gefundenes Passwort:" FontSize="14" FontWeight="Bold" Margin="0 10 0 0" />
+            <TextBox Grid.Column ="1" Text="{Binding GefundenesPasswort, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 0" />
 
 
-            <TextBlock Grid.Column ="1" Text="Benötigte Zeit:" FontSize="14" FontWeight="Bold" Margin="0 10 0 5" />
-            <TextBox Text="{Binding Zeit, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5" />
+            <TextBlock Grid.Column ="1" Text="Benötigte Zeit:" FontSize="14" FontWeight="Bold" Margin="0 10 0 0" />
+            <TextBox Text="{Binding Zeit, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 0" />
 
-            <TextBlock Grid.Column ="1" Text="Insgesamt benötigte Versuche:" FontSize="14" FontWeight="Bold" Margin="0 10 0 5" />
+            <TextBlock Grid.Column ="1" Text="Insgesamt benötigte Versuche:" FontSize="14" FontWeight="Bold" Margin="0 10 0 0" />
             <TextBox Grid.Column ="1" Text="{Binding AlleVersuche, Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" />
         </StackPanel>
         <Button Grid.Row="1" Grid.Column="0" Content="Starte Brute Force Angriff" Margin="5 5" Click="ButtonStart_Click" IsEnabled="{Binding IsEditableStartButton}"/>

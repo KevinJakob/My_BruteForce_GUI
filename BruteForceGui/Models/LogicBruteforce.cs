@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BruteForceGui.ViewModels;
 using System.Windows;
+using System.Timers;
 
 namespace BruteForceGui.Models
 {
@@ -23,12 +24,14 @@ namespace BruteForceGui.Models
         public event EventHandler<ResetArgs> Reset;
         public event EventHandler<BruteForceStatusResetArgs> PasswortStatusReset;
         public event EventHandler<PasswortFoundedResetArgs> PasswordfoundedReset;
+        public event EventHandler<TimerArgs> TimerUp;
         #endregion
 
         #region Variablen
         private string _eingegebenesPasswort;
         public string GeneriertesPasswort;
         public List<char> MeineZeichen;
+        public List<int> ContinueSpeicher;
         public int Listenlänge;
         public bool IsWeitermachen = false;
         public int PasswortLänge;
@@ -53,6 +56,7 @@ namespace BruteForceGui.Models
 
         public void BruteForceExecute(int maxLänge)
         {
+            _sw.Start();
             //Starte Rekursive schleife
             while (IsWeitermachen == false)
             {
@@ -81,7 +85,7 @@ namespace BruteForceGui.Models
                     zuTestendesPasswort[Position] = MeineZeichen[i];
                     if (Position < PasswortLänge - 1)
                     {
-                        ZeichenGenerator(zuTestendesPasswort, Position + 1, maxLänge);
+                        ZeichenGenerator(zuTestendesPasswort,Position + 1, maxLänge);
                     }
 
                     //Passwort umwandeln aus Array in string
@@ -93,7 +97,9 @@ namespace BruteForceGui.Models
                         Zähler++;
                         if (_uiVerzögerer == 0)
                         {
+                            //Status aktualisieren
                             OnPasswortStatus(GeneriertesPasswort, Zähler);
+                            OnTimer(Convert.ToString(_sw.Elapsed));
                         }
                         _uiVerzögerer++;
                         if (_uiVerzögerer == Aktualisierer)
@@ -129,6 +135,7 @@ namespace BruteForceGui.Models
         public void CharSelector(bool lower, bool upper, bool numbers, bool special)
         {
             MeineZeichen = new List<char>();
+            ContinueSpeicher = new List<int>();
 
             //kleinesAlphabet
             if (lower == true)
@@ -201,6 +208,12 @@ namespace BruteForceGui.Models
             var args = new ResetArgs(Resetter);
             Reset(this, args);
         }
+
+        protected void OnTimer(string Timer)
+        {
+            var args = new TimerArgs(Timer);
+            TimerUp(this, args);
+        }
         #endregion
         
         public void ResetData()
@@ -215,6 +228,7 @@ namespace BruteForceGui.Models
             //Zur Anzeige weiter geben
             OnPasswortStatusReset("nichts", Zähler);
             OnPasswortFoundedReset("Bitte starte die Suche!",_sw.Elapsed,_alleVersuche);
+            OnTimer("00:00:00");
         }
 
         public void Configurate(string Passwort, int minLänge, int maxLänge, int AktRhythm)
@@ -229,7 +243,6 @@ namespace BruteForceGui.Models
             {
                 //Startwerte festlegen
                 _eingegebenesPasswort = Passwort;
-                _sw.Start();
                 PasswortLänge = minLänge;
                 Aktualisierer = AktRhythm;
                 Listenlänge = MeineZeichen.Count;

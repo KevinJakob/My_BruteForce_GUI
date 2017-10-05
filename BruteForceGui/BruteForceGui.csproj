@@ -63,6 +63,7 @@
     <Compile Include="Models\Args\PasswortFoundedArgs.cs" />
     <Compile Include="Models\Args\PasswortFoundedResetArgs.cs" />
     <Compile Include="Models\Args\ResetArgs.cs" />
+    <Compile Include="Models\Args\TimerArgs.cs" />
     <Compile Include="Models\LogicBruteforce.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
