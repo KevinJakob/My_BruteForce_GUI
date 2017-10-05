@@ -12,8 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using BruteForceGui.ViewModels;
-using BruteForceGui.Models.Args;
-using BruteForceGui.Models;
 
 namespace BruteForceGui.Views
 {
