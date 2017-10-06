@@ -318,6 +318,7 @@ namespace BruteForceGui.ViewModels
 
 
             },TaskCreationOptions.LongRunning);   
+
         }
 
         public void ProgressStoped()
@@ -336,8 +337,6 @@ namespace BruteForceGui.ViewModels
             IsEditableStopButton = true;
             IsEditableContinueButton = false;
             logic.IsWeitermachen = false;
-            logic.BruteForceExecute(MaxZeichenAnzahl);
-
         }
 
 

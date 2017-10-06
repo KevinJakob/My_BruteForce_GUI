@@ -58,14 +58,22 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Args\BruteForceStatusArgs.cs" />
-    <Compile Include="Models\Args\BruteForceStatusResetArgs.cs" />
-    <Compile Include="Models\Args\PasswortFoundedArgs.cs" />
-    <Compile Include="Models\Args\PasswortFoundedResetArgs.cs" />
-    <Compile Include="Models\Args\ResetArgs.cs" />
-    <Compile Include="Models\Args\TimerArgs.cs" />
-    <Compile Include="Models\Args\WrongRangeArgs.cs" />
-    <Compile Include="Models\LogicBruteforce.cs" />
+    <Compile Include="Models\BruteForceMultiThread\Args\BruteForceStatusArgs.cs" />
+    <Compile Include="Models\BruteForceMultiThread\Args\BruteForceStatusResetArgs.cs" />
+    <Compile Include="Models\BruteForceMultiThread\Args\PasswortFoundedArgs.cs" />
+    <Compile Include="Models\BruteForceMultiThread\Args\PasswortFoundedResetArgs.cs" />
+    <Compile Include="Models\BruteForceMultiThread\Args\ResetArgs.cs" />
+    <Compile Include="Models\BruteForceMultiThread\Args\TimerArgs.cs" />
+    <Compile Include="Models\BruteForceMultiThread\Args\WrongRangeArgs.cs" />
+    <Compile Include="Models\BruteForceNoThread\Args\BruteForceStatusArgs.cs" />
+    <Compile Include="Models\BruteForceNoThread\Args\BruteForceStatusResetArgs.cs" />
+    <Compile Include="Models\BruteForceNoThread\Args\PasswortFoundedArgs.cs" />
+    <Compile Include="Models\BruteForceNoThread\Args\PasswortFoundedResetArgs.cs" />
+    <Compile Include="Models\BruteForceNoThread\Args\ResetArgs.cs" />
+    <Compile Include="Models\BruteForceNoThread\Args\TimerArgs.cs" />
+    <Compile Include="Models\BruteForceNoThread\Args\WrongRangeArgs.cs" />
+    <Compile Include="Models\BruteForceMultiThread\LogicBruteforceTask.cs" />
+    <Compile Include="Models\BruteForceNoThread\LogicBruteforce.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -102,12 +110,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MyBruteForce.ViewModel\MyBruteForce.ViewModel.csproj">
-      <Project>{d1d7f740-c11a-4184-a2af-7950c0027dc1}</Project>
-      <Name>MyBruteForce.ViewModel</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
