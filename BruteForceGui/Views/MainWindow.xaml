@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BruteForceGui.Views"
         mc:Ignorable="d"
-        Title="BruteForceAttack" Height="465" Width="600"
+        Title="BruteForceAttack" Height="480" Width="600"
         ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -13,13 +13,22 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="55"></RowDefinition>
-            <RowDefinition Height="55"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Margin="5 0 5 0">
-            <TextBlock Text="Zu findendes Passwort eingeben:" Margin="0 0 0 5" FontSize="14" FontWeight="Bold"/>
-            <TextBox Text="{Binding EPasswort, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditableStartButton}" />
+            <TextBlock Text="Zip Path In:" Margin="0 0 0 5" FontSize="14" FontWeight="Bold"/>
+            <DockPanel LastChildFill="True">
+                <Button x:Name="OpenFile" Click="OpenFile_Click" Content="..." DockPanel.Dock="Right" Width="20"></Button>
+                <TextBox DockPanel.Dock="Left"  Text="{Binding ZipPathIn, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditableStartButton}" />
+            </DockPanel>
+            <TextBlock Text="Zip Path Out:" Margin="0 0 0 5" FontSize="14" FontWeight="Bold"/>
+            <DockPanel>
+                <Button x:Name="OpenOutput" Click="OpenOutput_Click" Content="..." DockPanel.Dock="Right" Width="20"></Button>
+                <TextBox Text="{Binding ZipPathOut, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditableStartButton}" ></TextBox>
+            </DockPanel>
+            
 
 
             <TextBlock Text="Zeichen testen:" Margin="0 10 0 4" FontSize="14" FontWeight="Bold" />

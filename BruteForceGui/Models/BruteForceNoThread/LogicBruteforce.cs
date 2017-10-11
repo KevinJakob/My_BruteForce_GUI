@@ -7,15 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Timers;
+using ICSharpCode.SharpZipLib.Zip;
+using BruteForceGui.Abstraction;
+using System.IO;
 
 namespace BruteForceGui.Models
 {
     public class LogicBruteforce
     {
-        public LogicBruteforce()
+        private IZipMaster _zipMaster;
+        public LogicBruteforce(IZipMaster zipMaster)
         {
+            _zipMaster = zipMaster;
             _sw = new Stopwatch();
         }
+
+        
 
         #region EventHandler
         public event EventHandler<BruteForceStatusArgs> PasswortStatus;
@@ -40,6 +47,8 @@ namespace BruteForceGui.Models
         private long _alleVersuche;
         private int _aktualisierer;
         private bool _überbrücker=true;
+        private string _currentPath;
+        private string _outPath;
         #endregion
 
         #region Brute Force execute
@@ -120,13 +129,50 @@ namespace BruteForceGui.Models
         //Passwort auf übereinstimmung prüfen
         private void PasswortCheck()
         {
-            if (_generiertesPasswort == _eingegebenesPasswort)
+
+            try
             {
-                _alleVersuche = _zähler;
-                IsWeitermachen = true;
-                _sw.Stop();
-                OnPasswortFounded(_generiertesPasswort, _sw.Elapsed, _alleVersuche);
+                var result = _zipMaster.GetAllFilesUnorderd(_currentPath, _generiertesPasswort);
+                if(result.Any())
+                {
+                    bool exists = System.IO.Directory.Exists(_outPath);
+
+                    if (!exists)
+                        System.IO.Directory.CreateDirectory(_outPath);
+
+                    foreach (var item in result)
+                    {
+                        var path = Path.Combine(_outPath, item.Name);
+                        var ms = item.Stream as MemoryStream;
+                        if(ms == null)
+                        {
+                            ms = new MemoryStream();
+                            item.Stream.CopyTo(ms);
+                        }
+                        File.WriteAllBytes(path, ms.ToArray());
+                    }
+
+                    
+                    FinishBruteFoce();
+                }
             }
+            catch (Exception e)
+            {
+                
+            }
+
+            //if (_generiertesPasswort == _eingegebenesPasswort)
+            //{
+            //    FinishBruteFoce();
+            //}
+        }
+
+        private void FinishBruteFoce()
+        {
+            _alleVersuche = _zähler;
+            IsWeitermachen = true;
+            _sw.Stop();
+            OnPasswortFounded(_generiertesPasswort, _sw.Elapsed, _alleVersuche);
         }
         #endregion
 
@@ -234,8 +280,9 @@ namespace BruteForceGui.Models
             OnTimer("00:00:00");
         }
 
-        public void Configurate(string Passwort, int minLänge, int maxLänge, int AktRhythm)
+        public void Configurate(string pathIn, string pathOut, int minLänge, int maxLänge, int AktRhythm)
         {
+            
             //Min und Max auf Richtigkeit überprüfen
             if (minLänge > maxLänge)
             {
@@ -245,7 +292,8 @@ namespace BruteForceGui.Models
             else
             {
                 //Startwerte festlegen
-                _eingegebenesPasswort = Passwort;
+                _currentPath = pathIn;
+                _outPath = pathOut;
                 _passwortLänge = minLänge;
                 _aktualisierer = AktRhythm;
                 _listenlänge = _meineZeichen.Count;

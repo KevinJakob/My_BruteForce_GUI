@@ -8,12 +8,13 @@ using BruteForceGui.Models;
 using BruteForceGui.Models.Args;
 using System.Windows;
 using System.Threading;
+using BruteForceGui.Implentation;
 
 namespace BruteForceGui.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        LogicBruteforce logic = new LogicBruteforce();
+        LogicBruteforce logic = new LogicBruteforce(new DotNetZipImp());
         //Verknüpfte Variablen
         private bool _withLowerCase;
         public bool WithLowerCase
@@ -115,17 +116,31 @@ namespace BruteForceGui.ViewModels
             }
         }
 
-        private string _ePasswort;
-        public string EPasswort
+        private string _zipPathIn;
+        public string ZipPathIn
         {
             get
             {
-                return _ePasswort;
+                return _zipPathIn;
             }
             set
             {
-                _ePasswort = value;
-                OnPropertyChanged(nameof(EPasswort));
+                _zipPathIn = value;
+                OnPropertyChanged(nameof(ZipPathIn));
+            }
+        }
+
+        private string _zipPathOut;
+        public string ZipPathOut
+        {
+            get
+            {
+                return _zipPathOut;
+            }
+            set
+            {
+                _zipPathOut = value;
+                OnPropertyChanged(nameof(ZipPathOut));
             }
         }
 
@@ -304,6 +319,8 @@ namespace BruteForceGui.ViewModels
                 var MinZeichen = MinZeichenAnzahl;
                 var MaxZeichen = MaxZeichenAnzahl;
                 var Aktualisierung = AktRhythm;
+                var PathIn = ZipPathIn;
+                var PathOut = ZipPathOut;
                 GefundenesPasswort = "Passwort wird gesucht!";
 
 
@@ -314,7 +331,7 @@ namespace BruteForceGui.ViewModels
                 logic.Reset += logic_Reset;
                 logic.WrongRange += Logic_WrongRange;
                 logic.CharSelector(LowerCase, UpperCase, Numbers, SpecialChars);
-                logic.Configurate(EPasswort, MinZeichen, MaxZeichen, AktRhythm);
+                logic.Configurate(PathIn, PathOut, MinZeichen, MaxZeichen, AktRhythm);
 
 
             },TaskCreationOptions.LongRunning);   

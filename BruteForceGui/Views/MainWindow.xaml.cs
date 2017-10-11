@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using BruteForceGui.ViewModels;
+using System.Windows.Forms;
 
 namespace BruteForceGui.Views
 {
@@ -47,6 +48,29 @@ namespace BruteForceGui.Views
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressContinue();
+        }
+
+        private void OpenOutput_Click(object sender, RoutedEventArgs e)
+        {
+            var fbd = new FolderBrowserDialog();
+            var result = fbd.ShowDialog();
+            fbd.SelectedPath = @"C:\Users\My\Desktop";
+            if(result == System.Windows.Forms.DialogResult.OK)
+            {
+                _vm.ZipPathOut = fbd.SelectedPath;
+            }
+        }
+
+        private void OpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog();
+            ofd.InitialDirectory = @"C:\Users\My\Desktop";
+            ofd.Filter = "Zip Files (Zip)|*.zip";
+            var result = ofd.ShowDialog();
+            if(result == System.Windows.Forms.DialogResult.OK)
+            {
+                _vm.ZipPathIn = ofd.FileName;
+            }
         }
     }
 }
