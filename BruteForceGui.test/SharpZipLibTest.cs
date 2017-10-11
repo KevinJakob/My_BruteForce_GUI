@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,17 +13,7 @@ namespace BruteForceGui.test
     [TestClass]
     public class ZipTest
     {
-        [TestMethod]
-        public async Task SharpZipeExtractTest()
-        {
-            var zipimp = new SharpZibLibImp();
-            string path = GetInputPath();
-            string password = GetPassword();
-            var streams = zipimp.GetAllFilesUnorderd(path, password);
-            HandleResult(streams);
-        }
-
-        
+      
 
         [TestMethod]
         public async Task DotNetZipExtractTest()
@@ -32,9 +23,32 @@ namespace BruteForceGui.test
             HandleResult(result);
         }
 
+        [TestMethod]
+        public async Task DotNetZipExtractInMemoryTest()
+        {
+            var dotnetZipimp = new DotNetZipImp();
+            var ms = new MemoryStream(File.ReadAllBytes(GetInputPath()));
+            var sw = new Stopwatch();
+            sw.Start();
+            var result = dotnetZipimp.GetAllFilesUnorderd(ms, GetPassword());
+            var res1 = sw.ElapsedMilliseconds;
+            sw.Reset();
+            sw.Start();
+            try
+            {
+                var xxx = dotnetZipimp.GetAllFilesUnorderd(ms, "xyz");
+            }
+            catch (Exception)
+            {
+                var res2 = sw.ElapsedMilliseconds;
+                sw.Stop();
+            }
+            HandleResult(result);
+        }
+
         private static string GetPassword()
         {
-            return "Test1";
+            return "cc";
         }
 
         private void HandleResult(IEnumerable<Abstraction.IZipEntity> streams)

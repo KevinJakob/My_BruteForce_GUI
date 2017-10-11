@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Timers;
-using ICSharpCode.SharpZipLib.Zip;
 using BruteForceGui.Abstraction;
 using System.IO;
 
@@ -47,7 +46,7 @@ namespace BruteForceGui.Models
         private long _alleVersuche;
         private int _aktualisierer;
         private bool _überbrücker=true;
-        private string _currentPath;
+        private Stream _zipStream;
         private string _outPath;
         #endregion
 
@@ -115,6 +114,7 @@ namespace BruteForceGui.Models
                             _uiVerzögerer = 0;
                         }
                         PasswortCheck();
+                        
                     }
 
                     //Schleife Abbrechen
@@ -129,36 +129,36 @@ namespace BruteForceGui.Models
         //Passwort auf übereinstimmung prüfen
         private void PasswortCheck()
         {
-
             try
-            {
-                var result = _zipMaster.GetAllFilesUnorderd(_currentPath, _generiertesPasswort);
-                if(result.Any())
                 {
-                    bool exists = System.IO.Directory.Exists(_outPath);
-
-                    if (!exists)
-                        System.IO.Directory.CreateDirectory(_outPath);
-
-                    foreach (var item in result)
+                var memStream = new MemoryStream(((MemoryStream)_zipStream).ToArray());
+                    var result = _zipMaster.GetAllFilesUnorderd(memStream, _generiertesPasswort);
+                    if (result.Any())
                     {
-                        var path = Path.Combine(_outPath, item.Name);
-                        var ms = item.Stream as MemoryStream;
-                        if(ms == null)
-                        {
-                            ms = new MemoryStream();
-                            item.Stream.CopyTo(ms);
-                        }
-                        File.WriteAllBytes(path, ms.ToArray());
-                    }
+                        bool exists = System.IO.Directory.Exists(_outPath);
 
-                    
-                    FinishBruteFoce();
+                        if (!exists)
+                            System.IO.Directory.CreateDirectory(_outPath);
+
+                        foreach (var item in result)
+                        {
+                            var path = Path.Combine(_outPath, item.Name);
+                            var ms = item.Stream as MemoryStream;
+                            if (ms == null)
+                            {
+                                ms = new MemoryStream();
+                                item.Stream.CopyTo(ms);
+                            }
+                            File.WriteAllBytes(path, ms.ToArray());
+                        }
+
+
+                        FinishBruteFoce();
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                
+                catch (Exception e)
+                {
+
             }
 
             //if (_generiertesPasswort == _eingegebenesPasswort)
@@ -291,8 +291,10 @@ namespace BruteForceGui.Models
             }
             else
             {
+                var ms = new MemoryStream(File.ReadAllBytes(pathIn));
                 //Startwerte festlegen
-                _currentPath = pathIn;
+                _zipStream = ms;
+
                 _outPath = pathOut;
                 _passwortLänge = minLänge;
                 _aktualisierer = AktRhythm;

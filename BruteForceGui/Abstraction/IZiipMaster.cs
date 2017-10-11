@@ -10,5 +10,6 @@ namespace BruteForceGui.Abstraction
     public interface IZipMaster
     {
         IEnumerable<IZipEntity> GetAllFilesUnorderd(string path,string password = default(string));
+        IEnumerable<IZipEntity> GetAllFilesUnorderd(Stream stream, string password = default(string));
     }
 }

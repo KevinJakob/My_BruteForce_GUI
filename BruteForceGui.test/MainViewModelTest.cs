@@ -18,7 +18,6 @@ namespace BruteForceGui.test
             Assert.IsTrue(vm.IsEditableStartButton);
             vm.StartBruteForceAsync();
             Assert.IsFalse(vm.IsEditableStartButton);
-
         }
     }
 }

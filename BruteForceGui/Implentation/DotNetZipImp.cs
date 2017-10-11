@@ -15,20 +15,32 @@ namespace BruteForceGui.Implentation
         {
             using (ZipFile zip = ZipFile.Read(path))
             {
-                var list = new List<IZipEntity>();
-                foreach (ZipEntry e in zip)
-                {
-                    if(!e.IsDirectory)
-                    {
-                        var ms = new MemoryStream();
-                        e.ExtractWithPassword(ms, password);
-                        var entry = new MyZipEntity(e.FileName, true, ms);
-                        list.Add(entry);
-                    }   
-                }
-                return list;
+                return GetFiles(password, zip);
             }
         }
 
+        private static IEnumerable<IZipEntity> GetFiles(string password, ZipFile zip)
+        {
+            var list = new List<IZipEntity>();
+            foreach (ZipEntry e in zip)
+            {
+                if (!e.IsDirectory)
+                {
+                    var ms = new MemoryStream();
+                    e.ExtractWithPassword(ms, password);
+                    var entry = new MyZipEntity(e.FileName, true, ms);
+                    list.Add(entry);
+                }
+            }
+            return list;
+        }
+
+        public IEnumerable<IZipEntity> GetAllFilesUnorderd(Stream stream, string password = null)
+        {
+            using (var zip = ZipFile.Read(stream))
+            {
+                return GetFiles(password, zip);
+            }
+        }
     }
 }
