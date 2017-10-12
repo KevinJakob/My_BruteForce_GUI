@@ -43,13 +43,13 @@
             <TextBox Text="{Binding MaxZeichenAnzahl, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditableStartButton}" />
 
             <TextBlock Text="Status Aktualisierungsrhythmus:" FontSize="14" FontWeight="Bold" Margin="0 5 0 5"/>
-            <TextBox Text="{Binding AktRhythm, UpdateSourceTrigger=PropertyChanged}" Padding="3" IsEnabled="{Binding IsEditableStartButton}" />
+            <TextBox Text="{Binding AktRhythm, UpdateSourceTrigger=PropertyChanged}" Padding="3" Margin="0 0 0 3" IsEnabled="{Binding IsEditableStartButton}" />
             
             
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="5 0 5 0">
 
-            <TextBlock  Grid.Column ="1" Text="Status:" FontSize="14" FontWeight="Bold" Margin="0 0 0 5" />
+            <TextBlock  Grid.Column ="1" Text="Status:" FontSize="14" FontWeight="Bold" Margin="0 10 0 5" />
             <TextBlock  Grid.Column ="1" Text="Gerade wird geprüft:" />
             <TextBox  Grid.Column ="1" Text="{Binding GeradeTestet,Mode=TwoWay}" IsReadOnly="True" Background="#eee" Padding="3" Margin="0 0 0 5" />
             <TextBlock  Grid.Column ="1" Text="Versuche:" />
