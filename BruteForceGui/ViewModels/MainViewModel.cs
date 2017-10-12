@@ -15,7 +15,7 @@ namespace BruteForceGui.ViewModels
     public class MainViewModel : INotifyPropertyChanged
     {
         LogicBruteforce logic = new LogicBruteforce(new DotNetZipImp());
-        //Verknüpfte Variablen
+        #region Verknüpfte Variablen
         private bool _withLowerCase;
         public bool WithLowerCase
         {
@@ -269,17 +269,9 @@ namespace BruteForceGui.ViewModels
                 OnPropertyChanged(nameof(VerstricheneZeit));
             }
         }
-
-
-        //Event
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-
-        //Ersteinstellung
+        #endregion
+    
+        #region Ersteinstellung
         public MainViewModel()
         {
             IsEditableStartButton = true;
@@ -301,7 +293,9 @@ namespace BruteForceGui.ViewModels
             GeradeTestet = "nichts";
 
         }
+        #endregion
 
+        #region ButtonClick
         //Bruteforce Task als neuen Thread
         public Task StartBruteForceAsync()
         {
@@ -371,8 +365,9 @@ namespace BruteForceGui.ViewModels
             IsEditableStopButton = false;
             IsEditableContinueButton = false;
         }
+        #endregion
 
-
+        #region Events and Abos
         //ResetButtonSichtbar
         private void logic_Reset(object sender, ResetArgs e)
         {
@@ -437,6 +432,13 @@ namespace BruteForceGui.ViewModels
                 GeradeTestet = e.Passwort;
             });
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+#endregion
 
     }
 }
