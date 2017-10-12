@@ -58,7 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Abstraction\IZiipMaster.cs" />
+    <Compile Include="Abstraction\IZipMaster.cs" />
     <Compile Include="Abstraction\IZipEntity.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

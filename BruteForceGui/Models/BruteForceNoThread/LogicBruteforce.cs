@@ -264,7 +264,8 @@ namespace BruteForceGui.Models
             TimerUp(this, args);
         }
         #endregion
-        
+
+        #region Config and Reset
         public void ResetData()
         {
             //Werte zurücksetzen
@@ -307,5 +308,6 @@ namespace BruteForceGui.Models
                 OnReset(_überbrücker);
             }
         }
+        #endregion
     }
 }
