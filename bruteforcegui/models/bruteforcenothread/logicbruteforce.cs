@@ -47,6 +47,7 @@ namespace BruteForceGui.Models
         private int _aktualisierer;
         private bool _überbrücker=true;
         private Stream _zipStream;
+        private string _filePath;
         private string _outPath;
         #endregion
 
@@ -129,35 +130,36 @@ namespace BruteForceGui.Models
         //Passwort auf übereinstimmung prüfen
         private void PasswortCheck()
         {
+              
             try
-                {
+            {
                 var memStream = new MemoryStream(((MemoryStream)_zipStream).ToArray());
-                    var result = _zipMaster.GetAllFilesUnorderd(memStream, _generiertesPasswort);
-                    if (result.Any())
-                    {
-                        bool exists = System.IO.Directory.Exists(_outPath);
-
-                        if (!exists)
-                            System.IO.Directory.CreateDirectory(_outPath);
-
-                        foreach (var item in result)
-                        {
-                            var path = Path.Combine(_outPath, item.Name);
-                            var ms = item.Stream as MemoryStream;
-                            if (ms == null)
-                            {
-                                ms = new MemoryStream();
-                                item.Stream.CopyTo(ms);
-                            }
-                            File.WriteAllBytes(path, ms.ToArray());
-                        }
-
-
-                        FinishBruteFoce();
-                    }
-                }
-                catch (Exception e)
+                var result = _zipMaster.GetAllFilesUnorderd(memStream, _generiertesPasswort);
+                if (result.Any())
                 {
+                    bool exists = System.IO.Directory.Exists(_outPath);
+
+                    if (!exists)
+                    {
+                        System.IO.Directory.CreateDirectory(_outPath);
+                    }
+
+                    foreach (var item in result)
+                    {
+                        var path = Path.Combine(_outPath, item.Name);
+                        var ms = item.Stream as MemoryStream;
+                        if (ms == null)
+                        {
+                            ms = new MemoryStream();
+                            item.Stream.CopyTo(ms);
+                        }
+                        File.WriteAllBytes(path, ms.ToArray());
+                    }
+                    FinishBruteFoce();
+                }
+            }
+            catch (Exception e)
+            {
 
             }
 
@@ -295,7 +297,7 @@ namespace BruteForceGui.Models
                 var ms = new MemoryStream(File.ReadAllBytes(pathIn));
                 //Startwerte festlegen
                 _zipStream = ms;
-
+                _filePath = pathIn;
                 _outPath = pathOut;
                 _passwortLänge = minLänge;
                 _aktualisierer = AktRhythm;
